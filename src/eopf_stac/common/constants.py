@@ -146,6 +146,8 @@ DATASET_ASSET_EXTRA_FIELDS: Final[dict] = {
 ZIPPED_PRODUCT_ASSET_KEY: Final[str] = "zipped_product"
 ZIPPED_PRODUCT_HREF_BASE = "https://download.user.eopf.eodc.eu/zip"
 
+EODC_HDA_DATA_ENDPOINT = "https://data.eodc.eu"
+EODC_S3_DATA_ENDPOINT = "https://objects.eodc.eu"
 
 def get_item_asset_metadata() -> ItemAssetDefinition:
     return ItemAssetDefinition.create(
