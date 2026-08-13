@@ -208,7 +208,7 @@ def get_dataset_assets(
 def get_extra_assets(asset_href: str, item: pystac.Item, collection_id: str) -> dict[str, pystac.Asset]:
     metadata = get_item_asset_metadata().create_asset(os.path.join(asset_href, PRODUCT_METADATA_PATH))
     product = get_item_asset_product().create_asset(asset_href)
-    zip_product = create_zipped_product_asset(collection_id=collection_id, item_id=item.id)
+    zip_product = create_zipped_product_asset(eopf_href=asset_href, collection_id=collection_id, item_id=item.id)
     metadata.set_owner(item)
     product.set_owner(item)
     zip_product.set_owner(item)

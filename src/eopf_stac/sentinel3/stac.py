@@ -198,7 +198,7 @@ def create_item(
 
     for asset_key, item_asset in asset_defintions.items():
         if asset_key == ZIPPED_PRODUCT_ASSET_KEY:
-            asset = create_zipped_product_asset(collection_id=collection_id, item_id=item.id)
+            asset = create_zipped_product_asset(eopf_href=asset_href_prefix, collection_id=collection_id, item_id=item.id)
         else:
             path = asset_path_lookups[asset_key]
             if is_valid_string(path):

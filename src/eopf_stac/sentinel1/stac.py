@@ -221,7 +221,10 @@ def create_item(
     else:
         raise ValueError(f"Unsupported Sentinel-1 product type '{product_type}'")
 
-    assets[ZIPPED_PRODUCT_ASSET_KEY] = create_zipped_product_asset(collection_id=collection_id, item_id=item.id)
+    assets[ZIPPED_PRODUCT_ASSET_KEY] = create_zipped_product_asset(
+        eopf_href=asset_href_prefix,
+        collection_id=collection_id,
+        item_id=item.id)
 
     for key, asset in assets.items():
         assert key not in item.assets
