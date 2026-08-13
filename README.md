@@ -1,3 +1,7 @@
+> [!IMPORTANT]  
+> eopf-stac 0.13.x is the last version to support EOPF products converted with [eopf-cpm](https://gitlab.eopf.copernicus.eu/cpm/eopf-cpm) 2.x and will only receive bug fixes!
+> For products converted with eopf-cpm 3.0.0 upwards use eopf-stac 1.0 and later.
+
 # eopf-stac
 
 Python tool to create STAC metadata for an EOPF product.
