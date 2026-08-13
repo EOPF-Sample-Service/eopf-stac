@@ -4,10 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.13.0] - 
+## [0.13.0] - 2026-08-13
 
 ### Fixed
 - Add `zarr` dependency to pyproject.toml [#68](https://github.com/EOPF-Sample-Service/eopf-stac/issues/68)
+- Correctly set href for zipped EOPF product asset based on EOPF products [#75](https://github.com/EOPF-Sample-Service/eopf-stac/pull/75)
 
 
 ## [0.12.0] - 2026-02-03
