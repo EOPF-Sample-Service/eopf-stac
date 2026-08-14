@@ -58,35 +58,62 @@ SUPPORTED_PRODUCT_TYPES_S3 = (
 # [1] https://cpm.pages.eopf.copernicus.eu/eopf-cpm/main/PSFD/3-product-types-naming-rules.html
 
 PRODUCT_TYPE_TO_COLLECTION: Final[dict] = {
-    "S01SIWGRH": "sentinel-1-l1-grd",
-    "S01SSMGRH": "sentinel-1-l1-grd",
-    "S01SEWGRH": "sentinel-1-l1-grd",
-    "S01SEWGRD": "sentinel-1-l1-grd",
-    "S01SIWGRD": "sentinel-1-l1-grd",
-    "S01SSMGRD": "sentinel-1-l1-grd",
-    "S01SIWSLC": "sentinel-1-l1-slc",
-    "S01SIVSLC": "sentinel-1-l1-slc",  # CPM workaround
-    "S01SWVSLC": "sentinel-1-l1-slc",
-    "S01SSMSLC": "sentinel-1-l1-slc",
-    "S01SEWSLC": "sentinel-1-l1-slc",
-    "S01SIWOCN": "sentinel-1-l2-ocn",
-    "S01SEWOCN": "sentinel-1-l2-ocn",
-    "S01SSMOCN": "sentinel-1-l2-ocn",
-    "S01SWVOCN": "sentinel-1-l2-ocn",
+    # "S01SIWGRH": "sentinel-1-l1-grd",
+    # "S01SSMGRH": "sentinel-1-l1-grd",
+    # "S01SEWGRH": "sentinel-1-l1-grd",
+    # "S01SEWGRD": "sentinel-1-l1-grd",
+    # "S01SIWGRD": "sentinel-1-l1-grd",
+    # "S01SSMGRD": "sentinel-1-l1-grd",
+    # "S01SIWSLC": "sentinel-1-l1-slc",
+    # "S01SIVSLC": "sentinel-1-l1-slc",  # CPM workaround
+    # "S01SWVSLC": "sentinel-1-l1-slc",
+    # "S01SSMSLC": "sentinel-1-l1-slc",
+    # "S01SEWSLC": "sentinel-1-l1-slc",
+    # "S01SIWOCN": "sentinel-1-l2-ocn",
+    # "S01SEWOCN": "sentinel-1-l2-ocn",
+    # "S01SSMOCN": "sentinel-1-l2-ocn",
+    # "S01SWVOCN": "sentinel-1-l2-ocn",
+    "S02MSIL1C": "sentinel-2-l1c-zarr3",
+    "S02MSIL2A": "sentinel-2-l2a-zarr3",
+    # "S03OLCEFR": "sentinel-3-olci-l1-efr",
+    # "S03OLCERR": "sentinel-3-olci-l1-err",
+    # "S03OLCLFR": "sentinel-3-olci-l2-lfr",
+    # "S03OLCLRR": "sentinel-3-olci-l2-lrr",
+    # "S03SLSRBT": "sentinel-3-slstr-l1-rbt",
+    # "S03SLSFRP": "sentinel-3-slstr-l2-frp",
+    # "S03SLSLST": "sentinel-3-slstr-l2-lst",
+    # "S03SYNSDR": "sentinel-3-syn-l2",
+    # "S03SYNVGP": "sentinel-3-syn-l2-vgp",
+    # "S03SYNVG1": "sentinel-3-syn-l2-vg1",
+    # "S03SYNV10": "sentinel-3-syn-l2-v10",
+    # "S03SYNAOD": "sentinel-3-syn-l2-aod",
+}
+
+PRODUCT_TYPE_TO_CDSE_COLLECTION: Final[dict] = {
+    # "S01SIWGRH": "sentinel-1-l1-grd",
+    # "S01SSMGRH": "sentinel-1-l1-grd",
+    # "S01SEWGRH": "sentinel-1-l1-grd",
+    # "S01SEWGRD": "sentinel-1-l1-grd",
+    # "S01SIWGRD": "sentinel-1-l1-grd",
+    # "S01SSMGRD": "sentinel-1-l1-grd",
+    # "S01SIWSLC": "sentinel-1-l1-slc",
+    # "S01SIVSLC": "sentinel-1-l1-slc",  # CPM workaround
+    # "S01SWVSLC": "sentinel-1-l1-slc",
+    # "S01SSMSLC": "sentinel-1-l1-slc",
+    # "S01SEWSLC": "sentinel-1-l1-slc",
+    # "S01SIWOCN": "sentinel-1-l2-ocn",
+    # "S01SEWOCN": "sentinel-1-l2-ocn",
+    # "S01SSMOCN": "sentinel-1-l2-ocn",
+    # "S01SWVOCN": "sentinel-1-l2-ocn",
     "S02MSIL1C": "sentinel-2-l1c",
     "S02MSIL2A": "sentinel-2-l2a",
-    "S03OLCEFR": "sentinel-3-olci-l1-efr",
-    "S03OLCERR": "sentinel-3-olci-l1-err",
-    "S03OLCLFR": "sentinel-3-olci-l2-lfr",
-    "S03OLCLRR": "sentinel-3-olci-l2-lrr",
-    "S03SLSRBT": "sentinel-3-slstr-l1-rbt",
-    "S03SLSFRP": "sentinel-3-slstr-l2-frp",
-    "S03SLSLST": "sentinel-3-slstr-l2-lst",
-    "S03SYNSDR": "sentinel-3-syn-l2",
-    "S03SYNVGP": "sentinel-3-syn-l2-vgp",
-    "S03SYNVG1": "sentinel-3-syn-l2-vg1",
-    "S03SYNV10": "sentinel-3-syn-l2-v10",
-    "S03SYNAOD": "sentinel-3-syn-l2-aod",
+    # "S03OLCEFR": "sentinel-3-olci-l1-efr",
+    # "S03OLCERR": "sentinel-3-olci-l1-err",
+    # "S03OLCLFR": "sentinel-3-olci-l2-lfr",
+    # "S03OLCLRR": "sentinel-3-olci-l2-lrr",
+    # "S03SLSRBT": "sentinel-3-slstr-l1-rbt",
+    # "S03SLSFRP": "sentinel-3-slstr-l2-frp",
+    # "S03SLSLST": "sentinel-3-slstr-l2-lst",
 }
 
 MEDIA_TYPE_ZARR = "application/vnd+zarr"
@@ -148,6 +175,7 @@ ZIPPED_PRODUCT_HREF_BASE = "https://download.user.eopf.eodc.eu/zip"
 
 EODC_HDA_DATA_ENDPOINT = "https://data.eodc.eu"
 EODC_S3_DATA_ENDPOINT = "https://objects.eodc.eu"
+
 
 def get_item_asset_metadata() -> ItemAssetDefinition:
     return ItemAssetDefinition.create(

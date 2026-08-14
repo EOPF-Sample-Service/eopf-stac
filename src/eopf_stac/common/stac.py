@@ -16,14 +16,14 @@ from stactools.sentinel2.mgrs import MgrsExtension
 
 from eopf_stac.common.constants import (
     EO_EXTENSION_SCHEMA_URI,
+    EODC_HDA_DATA_ENDPOINT,
+    EODC_S3_DATA_ENDPOINT,
     EOPF_EXTENSION_SCHEMA_URI,
     PROCESSING_EXTENSION_SCHEMA_URI,
     PRODUCT_EXTENSION_SCHEMA_URI,
     S2_MGRS_PATTERN,
     VERSION_EXTENSION_SCHEMA_URI,
     ZIPPED_PRODUCT_HREF_BASE,
-    EODC_S3_DATA_ENDPOINT,
-    EODC_HDA_DATA_ENDPOINT,
     get_item_asset_zipped_product,
 )
 
@@ -319,21 +319,26 @@ def create_cdse_link(cdse_scene_href: str) -> Link:
     )
 
 
-def create_zipped_product_asset(
-    eopf_href: str,
-    collection_id: str,
-    item_id: str
-) -> Asset:
+def get_zipped_zarr_store_url(url: str, collection: str, item_id: str) -> str:
+    if url.startswith(EODC_S3_DATA_ENDPOINT):
+        zipped_zarr_store_href = os.path.join(
+            ZIPPED_PRODUCT_HREF_BASE, "collections", collection, "items", item_id + ".zip"
+        )
+    elif url.startswith(EODC_HDA_DATA_ENDPOINT):
+        zipped_zarr_store_href = f"{url}.zip"
+    else:
+        raise ValueError(f"Unable to create zip product asset: unrecognised endpoint {url}")
+    return zipped_zarr_store_href
 
+
+def create_zipped_product_asset(eopf_href: str, collection_id: str, item_id: str) -> Asset:
     if is_valid_string(collection_id) and is_valid_string(item_id):
         if eopf_href.startswith(EODC_S3_DATA_ENDPOINT):
             href = os.path.join(ZIPPED_PRODUCT_HREF_BASE, "collections", collection_id, "items", item_id + ".zip")
         elif eopf_href.startswith(EODC_HDA_DATA_ENDPOINT):
             href = f"{eopf_href}.zip"
         else:
-            raise ValueError(
-                f"Unable to create zip product asset: unrecognised endpoint {eopf_href}"
-            )
+            raise ValueError(f"Unable to create zip product asset: unrecognised endpoint {eopf_href}")
         return get_item_asset_zipped_product().create_asset(href=href)
     else:
         raise ValueError(f"Unable to create zip product asset for collection={collection_id} and item={item_id}")

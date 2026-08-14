@@ -5,7 +5,10 @@ import os
 from sys import exit
 from typing import Optional
 
-from eopf_stac.io import create_item, read_metadata, register_item
+from eopf_stac.common.constants import PRODUCT_TYPE_TO_COLLECTION
+from eopf_stac.io import get_cdse_stac_item_url, register_item
+from eopf_stac.stac.factory import StacItemBuilderFactory
+from eopf_stac.zarr.reader import ZarrMetadataReaderV3
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +29,7 @@ def configure_logging(level: int):
     )
 
 
-def validate_env(url: str, dry_run: bool, output_file: Optional[str], env):
+def validate_env(url: str, dry_run: bool, output_file: Optional[str], source_uri: str, env):
     if url.startswith("s3://"):
         # if s3 url is provided, the credentials are required?
         missing_vars = []
@@ -45,6 +48,9 @@ def validate_env(url: str, dry_run: bool, output_file: Optional[str], env):
     if not dry_run and not output_file:
         if ENV_STAC_API_URL not in env:
             raise ValueError(f"The enviroment variable {ENV_STAC_API_URL} is missing")
+
+    if source_uri is None or len(source_uri) == 0:
+        logger.warning("No value for --source-uri provided. Some STAC properties might not be available!")
 
 
 def exit_on_error(exit_code: int = 1):
@@ -73,14 +79,32 @@ def main():
         configure_logging(logging.INFO)
 
     try:
-        validate_env(args.URL, args.dry_run, args.output_file, os.environ)
+        validate_env(args.URL, args.dry_run, args.output_file, args.source_uri, os.environ)
 
-        logger.debug("Opening metadata file ...")
-        metadata = read_metadata(args.URL)
+        # Read metadata
+        reader = ZarrMetadataReaderV3()
+        zarr_json, product_type = reader.read(args.URL)
 
-        logger.info(f"Creating STAC item for {args.URL} ...")
-        item = create_item(metadata=metadata, eopf_href=args.URL, source_uri=args.source_uri)
-        logger.debug(json.dumps(item.to_dict(), indent=4))
+        # Check if collection for product type is defined
+        try:
+            collection = PRODUCT_TYPE_TO_COLLECTION[product_type]
+        except KeyError:
+            raise ValueError(f"No Zarr v3 collection defined for product type {product_type}")
+
+        # Determine CDSE STAC item url
+        if args.source_uri is not None and len(args.source_uri) > 0:
+            logger.info(f"Retrieving STAC item url from CDSE for {args.source_uri}")
+            cdse_stac_item_url = get_cdse_stac_item_url(args.source_uri, product_type)
+        else:
+            cdse_stac_item_url = None
+
+        # Create STAC item
+        logger.info(f"Creating STAC item for product_type {product_type} and url {args.URL} ...")
+        item = StacItemBuilderFactory().create(product_type).build(zarr_json, args.URL, cdse_stac_item_url)
+        logger.debug(json.dumps(item.to_dict(), indent=2))
+
+        # Set collection
+        item.collection_id = collection
 
         if not args.dry_run:
             if args.output_file:
