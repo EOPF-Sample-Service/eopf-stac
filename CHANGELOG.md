@@ -4,9 +4,32 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.0.0] - 2026-08-14
+
+> [!IMPORTANT]  
+> This is a breaking relase!
+> Only supports products converted with [eopf-cpm](https://gitlab.eopf.copernicus.eu/cpm/eopf-cpm) 3.0.0 and later (Zarr v3).
+> Currently STAC items can be created for **Sentinel-2 L1C and L2A products only**.
+
+### Added
+
+- Add support for Zarr v3 for Sentinel-2 L1C and L2A products
+    - Metadata is now following the [STAC Zarr Best Practices](https://github.com/radiantearth/stac-best-practices/blob/main/best-practices-zarr.md) (only Zarr groups exposed as STAC assets, band names to match array names, etc.)
+    - AOT and WVP maps are exposed in asset "Atmosphere" in 10m, 20m and 60m resolution
+    - Scene classification map is exposed in 20m and 60m resolution
+    - True color image is not part of the Zarr store anymore and corresponding STAC asset was removed
+    - STAC extension [xarray-assets](https://github.com/stac-extensions/xarray-assets) has been deprecated and was removed
+    - STAC [Zarr extension](https://github.com/stac-extensions/zarr) was added where useful
+    - Media type of Zarr assets changed from application/vnd+zarr to application/vnd.zarr; version=3 including an additional Zarr version indicator
+    - Asset referencing the "Consolidated Metadata" was removed. Name and layout of Zarr metadata file can be inferred from Zarr version in the media type
+
 ## [0.13.0] - 2026-08-13
 
+> [!IMPORTANT]  
+> Last version to support EOPF products converted with [eopf-cpm](https://gitlab.eopf.copernicus.eu/cpm/eopf-cpm) 2.x
+
 ### Fixed
+
 - Add `zarr` dependency to pyproject.toml [#68](https://github.com/EOPF-Sample-Service/eopf-stac/issues/68)
 - Correctly set href for zipped EOPF product asset based on EOPF products [#75](https://github.com/EOPF-Sample-Service/eopf-stac/pull/75)
 
