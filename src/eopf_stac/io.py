@@ -7,11 +7,12 @@ import fsspec
 import pystac
 import requests
 import s3fs
-from pystac.utils import now_in_utc
+from pystac.utils import datetime_to_str, now_in_utc
 
 from eopf_stac.common.constants import (
     CDSE_STAC_API_URL,
     PRODUCT_METADATA_PATH,
+    PRODUCT_TYPE_TO_CDSE_COLLECTION,
     PRODUCT_TYPE_TO_COLLECTION,
     SUPPORTED_PRODUCT_TYPES_S1,
     SUPPORTED_PRODUCT_TYPES_S2,
@@ -60,30 +61,24 @@ def create_item(metadata: dict, eopf_href: str, source_uri: str | None) -> pysta
         raise ValueError("No product type in stac_discovery metadata")
     logger.info(f"Product type is {product_type}")
 
+    collection = PRODUCT_TYPE_TO_COLLECTION.get(product_type)
+    if collection is None:
+        raise ValueError(f"No collection defined for product type '{product_type}'")
+
     # Extract CPM version from eopf_href
     cpm_version = get_cpm_version(eopf_href)
     logger.info(f"CPM version is {cpm_version}")
 
     # CDSE scene id and href
-    logger.info(f"Source URI is {source_uri}")
     cdse_scene_id = None
     if source_uri is not None and len(source_uri) > 0:
-        cdse_scene_id = get_source_identifier(source_uri)
+        cdse_scene_id = get_cdse_identifier(source_uri)
         logger.info(f"CDSE scene ID is {cdse_scene_id}")
     else:
         logger.warning("No value for --source-uri provided. Some STAC properties might not be available!")
 
-    cdse_scene_href = None
-    if cdse_scene_id is not None:
-        cdse_scene_href = get_source_stac_item_url(cdse_scene_id)
-        logger.info(f"CDSE STAC item URL of source scene is {cdse_scene_href}")
-
-    if cdse_scene_href is None:
-        logger.warning("Unable to determine link to the original scene at CSDE STAC API!")
-
-    collection = PRODUCT_TYPE_TO_COLLECTION.get(product_type)
-    if collection is None:
-        raise ValueError(f"No collection defined for product type '{product_type}'")
+    logger.info(f"Retrieving STAC item url from CDSE for {source_uri}")
+    cdse_stac_item_url = get_cdse_stac_item_url(source_uri, product_type)
 
     item = None
     if product_type in SUPPORTED_PRODUCT_TYPES_S1:
@@ -93,7 +88,7 @@ def create_item(metadata: dict, eopf_href: str, source_uri: str | None) -> pysta
             asset_href_prefix=eopf_href,
             cpm_version=cpm_version,
             cdse_scene_id=cdse_scene_id,
-            cdse_scene_href=cdse_scene_href,
+            cdse_scene_href=cdse_stac_item_url,
             collection_id=collection,
         )
     elif product_type in SUPPORTED_PRODUCT_TYPES_S2:
@@ -103,7 +98,7 @@ def create_item(metadata: dict, eopf_href: str, source_uri: str | None) -> pysta
             asset_href_prefix=eopf_href,
             cpm_version=cpm_version,
             cdse_scene_id=cdse_scene_id,
-            cdse_scene_href=cdse_scene_href,
+            cdse_scene_href=cdse_stac_item_url,
             collection_id=collection,
         )
     elif product_type in SUPPORTED_PRODUCT_TYPES_S3:
@@ -113,7 +108,7 @@ def create_item(metadata: dict, eopf_href: str, source_uri: str | None) -> pysta
             asset_href_prefix=eopf_href,
             cpm_version=cpm_version,
             cdse_scene_id=cdse_scene_id,
-            cdse_scene_href=cdse_scene_href,
+            cdse_scene_href=cdse_stac_item_url,
             collection_id=collection,
         )
     else:
@@ -126,32 +121,42 @@ def create_item(metadata: dict, eopf_href: str, source_uri: str | None) -> pysta
 
 
 def register_item(item: pystac.Item, stac_api_url: str) -> pystac.Item:
-    logger.info(f"Inserting STAC item into catalog {stac_api_url} ...")
+    logger.info(f"Insert/update STAC item {item.id} at catalog {stac_api_url} ...")
 
     item.remove_links("self")
     session = requests.Session()
     if "STAC_INGEST_USER" in os.environ and "STAC_INGEST_PASS" in os.environ:
         session.auth = (os.environ["STAC_INGEST_USER"], os.environ["STAC_INGEST_PASS"])
+
     api_action = "inserted"
+    item.properties["published"] = datetime_to_str(now_in_utc())
     r = session.post(f"{stac_api_url}/collections/{item.collection_id}/items", json=item.to_dict())
     if r.status_code == 409:
         # STAC item already exists -> update
         item.common_metadata.updated = now_in_utc()
+
+        # try to keep original created and published timestamps
+        try:
+            existing_item = session.get(f"{stac_api_url}/collections/{item.collection_id}/items/{item.id}").json()
+            item.properties["published"] = existing_item["properties"]["published"]
+            item.properties["created"] = existing_item["properties"]["created"]
+        except Exception as _:
+            pass
+
         api_action = "updated"
         r = session.put(
             f"{stac_api_url}/collections/{item.collection_id}/items/{item.id}",
             json=item.to_dict(),
         )
     r.raise_for_status()
-
     logger.info(f"Successfully {api_action} STAC item {item.id} in collection {item.collection_id}")
 
     return item
 
 
-def get_source_identifier(source_uri: str | None) -> str:
+def get_cdse_identifier(source_uri: str | None) -> str:
     source_identifier = None
-    if source_uri is not None:
+    if source_uri is not None and len(source_uri) > 0:
         if source_uri.endswith("/"):
             source_uri = source_uri[:-1]
         source_identifier = source_uri.split("/")[-1]
@@ -160,35 +165,21 @@ def get_source_identifier(source_uri: str | None) -> str:
     return source_identifier
 
 
-def get_source_stac_item_url(source_scene_id: str) -> str | None:
-    source_stac_item_url = None
+def get_cdse_stac_item_url(source_uri: str | None, product_type: str) -> str | None:
     try:
-        source_stac_item_url = get_cdse_stac_item_url(source_scene_id)
+        cdse_stac_item_id = get_cdse_identifier(source_uri)
+        if cdse_stac_item_id is not None and len(cdse_stac_item_id) > 0:
+            logger.info(f"CDSE STAC item id is {cdse_stac_item_id}")
+            collection = PRODUCT_TYPE_TO_CDSE_COLLECTION[product_type]
+            cdse_stac_item_url = f"{CDSE_STAC_API_URL}/collections/{collection}/items/{cdse_stac_item_id}"
+            # Check if item really exists
+            response = requests.get(cdse_stac_item_url)
+            response.raise_for_status()
+            logger.info(f"CDSE STAC item url is {cdse_stac_item_url}")
+            return cdse_stac_item_url
+        else:
+            raise ValueError("Could not detemine CDSE STAC item id")
+
     except Exception as e:
-        logger.warning(str(e))
-
-    return source_stac_item_url
-
-
-def get_cdse_stac_item_url(scene_id: str) -> str:
-    # https://stac.dataspace.copernicus.eu/v1/search?ids=
-    # https://stac.dataspace.copernicus.eu/v1/search?ids=S2B_MSIL1C_20240428T102559_N0510_R108_T32UPC_20240428T123125
-    params = {"ids": scene_id}
-    repsonse = requests.get(url=f"{CDSE_STAC_API_URL}/search", params=params)
-    repsonse.raise_for_status()
-
-    item_url = None
-    item_collection_dict = repsonse.json()
-    if len(item_collection_dict["features"]) > 0:
-        item_dict = item_collection_dict["features"][0]
-        for link in item_dict["links"]:
-            rel = link.get("rel")
-            if rel is not None and rel == "self":
-                href = link.get("href")
-                if href is not None and len(href) > 0:
-                    item_url = href
-
-    if item_url is None:
-        raise ValueError(f"Failed to find STAC item for scene id {scene_id} at CDSE")
-
-    return item_url
+        logger.warning(f"Failed to determine STAC item url at CSDE: {str(e)}")
+        return None

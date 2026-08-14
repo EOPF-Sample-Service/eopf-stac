@@ -1,0 +1,283 @@
+{#- jinja template to generate STAC item from zarr.json and extra extra information #}
+{
+  "id": {{ extra.id | tojson }},
+  "type": "Feature",
+  "bbox": {{ zarr.attributes.stac_discovery.bbox | tojson }},
+  "geometry": {{ zarr.attributes.stac_discovery.geometry | tojson }},
+  "links": [
+    {
+      "rel": "cite-as",
+      "href": "https://doi.org/10.5270/S2_-742ikth"
+    },
+    {
+      "rel": "license",
+      "href": "https://sentinel.esa.int/documents/247904/690755/Sentinel_Data_Legal_Notice",
+      "type": "application/pdf",
+      "title": "Legal notice on the use of Copernicus Sentinel Data and Service Information"
+    }
+    {%- if extra.cdse_item_uri %}
+    ,{
+      "rel": "alternate",
+      "title": "Corresponding STAC item in CDSE",
+      "href": {{ extra.cdse_item_uri | tojson }},
+      "type": "application/geo+json"
+    }
+    {%- endif %}
+  ],
+  "properties": {
+    "created": {{ extra.created | tojson }},
+    "updated": {{ extra.created | tojson }},
+    "datetime": {{ zarr.attributes.stac_discovery.properties.datetime | tojson  }},
+    "start_datetime": {{ zarr.attributes.stac_discovery.properties.start_datetime | tojson }},
+    "end_datetime": {{ zarr.attributes.stac_discovery.properties.end_datetime | tojson }},
+    "constellation": "sentinel-2",
+    "deprecated": false,
+    "eo:cloud_cover": {{ zarr.attributes.stac_discovery.properties['eo:cloud_cover'] | tojson }},
+    "eo:snow_cover": {{ zarr.attributes.stac_discovery.properties['eo:snow_cover'] | tojson }},
+    "eopf:datatake_id": {{ zarr.attributes.stac_discovery.properties['eopf:datatake_id'] | tojson }},
+    "eopf:datastrip_id": {{ zarr.attributes.stac_discovery.properties['eopf:datastrip_id'] | tojson }},
+    "eopf:instrument_mode": {{ zarr.attributes.stac_discovery.properties['eopf:instrument_mode'] | tojson }},
+    "grid:code": {{ extra['grid:code'] | tojson }},
+    "gsd": 10,
+    "instruments": [
+      "msi"
+    ],    
+    "mgrs:grid_square": {{ extra['mgrs:grid_square'] | tojson }},
+    "mgrs:latitude_band": {{ extra['mgrs:latitude_band'] | tojson }},
+    "mgrs:utm_zone": {{ extra['mgrs:utm_zone'] | tojson }},
+    "mission": "Sentinel-2",
+    "platform": {{ zarr.attributes.stac_discovery.properties.platform | tojson }},
+    "processing:facility": {{ zarr.attributes.stac_discovery.properties['processing:facility'] | tojson }},
+    "processing:level": "L1C",
+    "processing:lineage": {{ zarr.attributes.stac_discovery.properties['processing:lineage'] | tojson }},
+    "processing:software": {{ zarr.attributes.stac_discovery.properties['processing:software'] | tojson }},
+    "processing:version": {{ extra['processing:version'] | tojson }},
+    "product:type": "S02MSIL1C",
+    "product:timeliness": {{ zarr.attributes.stac_discovery.properties['product:timeliness'] | tojson }},
+    "product:timeliness_category": {{ zarr.attributes.stac_discovery.properties['product:timeliness_category'] | tojson }},
+    "proj:bbox": {{ zarr.attributes.stac_discovery.properties['proj:bbox'] | tojson }},
+    "proj:code": {{ zarr.attributes.stac_discovery.properties['proj:code'] | tojson }},
+    "proj:wkt2": {{ zarr.attributes.stac_discovery.properties['proj:wkt2'] | tojson }},
+    "providers": [
+      {
+        "url": "https://commission.europa.eu/",
+        "name": "European Commission",
+        "roles": [
+          "licensor"
+        ]
+      },
+      {
+        "url": "https://sentinel.esa.int/web/sentinel/missions/sentinel-2",
+        "name": "ESA",
+        "roles": [
+          "producer",
+          "processor"
+        ]
+      },
+      {
+        "url": "https://zarr.eopf.copernicus.eu/",
+        "name": "EOPF Sentinel Zarr Samples Service",
+        "roles": [
+          "host",
+          "processor"
+        ]
+      }
+    ],    
+    "sat:absolute_orbit": {{ zarr.attributes.stac_discovery.properties['sat:absolute_orbit'] | tojson }},
+    "sat:orbit_state": {{ zarr.attributes.stac_discovery.properties['sat:orbit_state'] | tojson }},
+    "sat:platform_international_designator": {{ zarr.attributes.stac_discovery.properties['sat:platform_international_designator'] | tojson }},
+    "sat:relative_orbit": {{ zarr.attributes.stac_discovery.properties['sat:relative_orbit'] | tojson }},
+    "sci:doi": {{ zarr.attributes.stac_discovery.properties['sci:doi'] | tojson }},
+    "view:sun_azimuth": {{ zarr.attributes.other_metadata.mean_sun_azimuth_angle_in_deg_for_all_bands_all_detectors | tojson }},
+    "view:sun_elevation": {{ zarr.attributes.other_metadata.mean_sun_zenith_angle_in_deg_for_all_bands_all_detectors | tojson }}
+  },
+  "assets": {
+    "SR_10m": {
+      "href": "{{ extra.zarr_store_href }}/measurements/reflectance/r10m",
+      "type": "application/vnd.zarr; version=3",
+      "title": "Surface Reflectance - 10m",
+      "gsd": 10,
+      "data_type": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r10m/b02'].data_type | tojson }},
+      "nodata": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r10m/b02'].attributes.fill_value | tojson }},
+      "raster:scale": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r10m/b02'].attributes.scale_factor | tojson }},
+      "raster:offset": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r10m/b02'].attributes.add_offset | tojson }},
+      "raster:spatial_resolution": 10,
+      "proj:shape": [10980, 10980],
+      "bands": [
+        {
+          "name": "b02",          
+          "description": "Blue (band 2)",
+          "eo:common_name": "blue",
+          "eo:center_wavelength": 0.49,
+          "eo:full_width_half_max": 0.098
+        },            
+        {
+          "name": "b03",
+          "eo:common_name": "green",
+          "description": "Green (band 3)",
+          "eo:center_wavelength": 0.56,
+          "eo:full_width_half_max": 0.045
+        },      
+        {
+          "name": "b04",
+          "eo:common_name": "red",
+          "description": "Red (band 4)",
+          "eo:center_wavelength": 0.665,
+          "eo:full_width_half_max": 0.038
+        },
+        {
+          "name": "b08",
+          "eo:common_name": "nir",
+          "description": "NIR 1 (band 8)",
+          "eo:center_wavelength": 0.842,
+          "eo:full_width_half_max": 0.145
+        }
+      ],      
+      "roles": [
+        "data",
+        "reflectance"
+      ],
+      "zarr:node_type": "group"
+    },
+    "SR_20m": {
+      "href": "{{ extra.zarr_store_href }}/measurements/reflectance/r20m",
+      "type": "application/vnd.zarr; version=3",
+      "title": "Surface Reflectance - 20m",
+      "gsd": 20,
+      "data_type": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r20m/b05'].data_type | tojson }},
+      "nodata": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r20m/b05'].attributes.fill_value | tojson }},
+      "raster:scale": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r20m/b05'].attributes.scale_factor | tojson }},
+      "raster:offset": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r20m/b05'].attributes.add_offset | tojson }},
+      "raster:spatial_resolution": 20,
+      "proj:shape": [5490, 5490],
+      "bands": [
+        {
+          "name": "b05",
+          "eo:common_name": "rededge071",
+          "description": "Red edge 1 (band 5)",
+          "eo:center_wavelength": 0.704,
+          "eo:full_width_half_max": 0.019
+        },
+        {
+          "name": "b06",
+          "eo:common_name": "rededge075",
+          "description": "Red edge 2 (band 6)",
+          "eo:center_wavelength": 0.74,
+          "eo:full_width_half_max": 0.018
+        },
+        {
+          "name": "b07",
+          "eo:common_name": "rededge078",
+          "description": "Red edge 3 (band 7)",
+          "eo:center_wavelength": 0.783,
+          "eo:full_width_half_max": 0.028
+        },
+        {
+          "name": "b8a",
+          "eo:common_name": "nir08",
+          "description": "NIR 2 (band 8A)",
+          "eo:center_wavelength": 0.865,
+          "eo:full_width_half_max": 0.033
+        },
+        {
+          "name": "b11",
+          "eo:common_name": "swir16",
+          "description": "SWIR 1 (band 11)",
+          "eo:center_wavelength": 1.61,
+          "eo:full_width_half_max": 0.143
+        },
+        {
+          "name": "b12",
+          "eo:common_name": "swir22",
+          "description": "SWIR 2 (band 12)",
+          "eo:center_wavelength": 2.19,
+          "eo:full_width_half_max": 0.242
+        }
+      ],      
+      "roles": [
+        "data",
+        "reflectance"
+      ],
+      "zarr:node_type": "group"
+    },
+    "SR_60m": {
+      "href": "{{ extra.zarr_store_href }}/measurements/reflectance/r60m",
+      "type": "application/vnd.zarr; version=3",
+      "title": "Surface Reflectance - 60m",
+      "gsd": 60,      
+      "proj:shape": [1830, 1830],
+      "data_type": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r60m/b01'].data_type | tojson }},
+      "nodata": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r60m/b01'].attributes.fill_value | tojson }},
+      "raster:scale": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r60m/b01'].attributes.scale_factor | tojson }},
+      "raster:offset": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r60m/b01'].attributes.add_offset | tojson }},
+      "raster:spatial_resolution": 60,
+      "bands": [
+        {
+          "name": "b01",
+          "eo:common_name": "coastal",
+          "description": "Coastal aerosol (band 1)",
+          "eo:center_wavelength": 0.443,
+          "eo:full_width_half_max": 0.027
+        },
+        {
+          "name": "b09",
+          "eo:common_name": "nir09",
+          "description": "NIR 3 (band 9)",
+          "eo:center_wavelength": 0.945,
+          "eo:full_width_half_max": 0.026
+        },
+        {
+          "name": "b10",
+          "description": "Cirrus (band 10)",
+          "eo:common_name": "cirrus",
+          "eo:full_width_half_max": 0.075,
+          "eo:center_wavelength": 1.3735
+        }
+      ],      
+      "roles": [
+        "data",
+        "reflectance"
+      ],
+      "zarr:node_type": "group"
+    },
+    "product": {
+      "href": {{ extra.zarr_store_href | tojson }},
+      "type": "application/vnd.zarr; version=3",
+      "title": "EOPF Product",
+      
+      "roles": [
+        "data",
+        "metadata"
+      ],
+      "zarr:consolidated": true,
+      "zarr:node_type": "group"
+    },
+    "zipped_product": {
+      "href": {{ extra.zarr_store_zipped_href | tojson}},
+      "type": "application/zip",
+      "title": "Zipped EOPF Product",
+      "roles": [
+        "data",
+        "metadata",
+        "archive"
+      ]      
+    }
+  },
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/timestamps/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/eo/v2.0.0/schema.json",
+    "https://stac-extensions.github.io/sat/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/projection/v2.0.0/schema.json",
+    "https://stac-extensions.github.io/mgrs/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/grid/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/view/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/processing/v1.2.0/schema.json",
+    "https://stac-extensions.github.io/product/v0.1.0/schema.json",
+    "https://stac-extensions.github.io/scientific/v1.0.0/schema.json",
+    "https://cs-si.github.io/eopf-stac-extension/v1.2.0/schema.json",
+    "https://stac-extensions.github.io/raster/v2.0.0/schema.json",
+    "https://stac-extensions.github.io/version/v1.2.0/schema.json",
+    "https://stac-extensions.github.io/zarr/v1.1.0/schema.json"
+  ]
+}
