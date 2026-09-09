@@ -100,8 +100,6 @@
       "gsd": 10,
       "data_type": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r10m/b02'].data_type | tojson }},
       "nodata": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r10m/b02'].attributes.fill_value | tojson }},
-      "raster:scale": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r10m/b02'].attributes.scale_factor | tojson }},
-      "raster:offset": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r10m/b02'].attributes.add_offset | tojson }},
       "raster:spatial_resolution": 10,
       "proj:shape": [10980, 10980],
       "bands": [
@@ -148,8 +146,6 @@
       "gsd": 20,
       "data_type": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r20m/b05'].data_type | tojson }},
       "nodata": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r20m/b05'].attributes.fill_value | tojson }},
-      "raster:scale": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r20m/b05'].attributes.scale_factor | tojson }},
-      "raster:offset": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r20m/b05'].attributes.add_offset | tojson }},
       "raster:spatial_resolution": 20,
       "proj:shape": [5490, 5490],
       "bands": [
@@ -239,8 +235,6 @@
       "proj:shape": [1830, 1830],
       "data_type": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r60m/b01'].data_type | tojson }},
       "nodata": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r60m/b01'].attributes.fill_value | tojson }},
-      "raster:scale": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r60m/b01'].attributes.scale_factor | tojson }},
-      "raster:offset": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r60m/b01'].attributes.add_offset | tojson }},
       "raster:spatial_resolution": 60,
       "bands": [
         {
@@ -336,8 +330,6 @@
       "proj:shape": [10980, 10980],
       "nodata": 0,
       "data_type": "uint16",
-      "raster:scale": 0.001,
-      "raster:offset": 0,
       "raster:spatial_resolution": 10,
       "bands": [
         {
@@ -364,8 +356,6 @@
       "proj:shape": [5490, 5490],
       "nodata": 0,
       "data_type": "uint16",
-      "raster:scale": 0.001,
-      "raster:offset": 0,
       "raster:spatial_resolution": 20,
       "bands": [
         {
@@ -392,8 +382,6 @@
       "proj:shape": [1830, 1830],
       "nodata": 0,
       "data_type": "uint16",
-      "raster:scale": 0.001,
-      "raster:offset": 0,
       "raster:spatial_resolution": 60,
       "bands": [
         {
@@ -419,9 +407,7 @@
       "gsd": 20,
       "proj:shape": [5490, 5490],
       "data_type": {{ zarr.consolidated_metadata.metadata['conditions/mask/l2a_classification/r20m/scl'].data_type | tojson }},
-      "nodata": {{ zarr.consolidated_metadata.metadata['conditions/mask/l2a_classification/r20m/scl'].attributes.fill_value | tojson }},      
-      "raster:scale": {{ zarr.consolidated_metadata.metadata['conditions/mask/l2a_classification/r20m/scl'].attributes.scale_factor | tojson }},
-      "raster:offset": {{ zarr.consolidated_metadata.metadata['conditions/mask/l2a_classification/r20m/scl'].attributes.add_offset | tojson }},      
+      "nodata": {{ zarr.consolidated_metadata.metadata['conditions/mask/l2a_classification/r20m/scl'].attributes.fill_value | tojson }},
       "raster:spatial_resolution": 20,
       "bands": [
         {

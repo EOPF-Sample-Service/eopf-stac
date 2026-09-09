@@ -99,8 +99,6 @@
       "gsd": 10,
       "data_type": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r10m/b02'].data_type | tojson }},
       "nodata": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r10m/b02'].attributes.fill_value | tojson }},
-      "raster:scale": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r10m/b02'].attributes.scale_factor | tojson }},
-      "raster:offset": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r10m/b02'].attributes.add_offset | tojson }},
       "raster:spatial_resolution": 10,
       "proj:shape": [10980, 10980],
       "bands": [
@@ -146,8 +144,6 @@
       "gsd": 20,
       "data_type": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r20m/b05'].data_type | tojson }},
       "nodata": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r20m/b05'].attributes.fill_value | tojson }},
-      "raster:scale": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r20m/b05'].attributes.scale_factor | tojson }},
-      "raster:offset": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r20m/b05'].attributes.add_offset | tojson }},
       "raster:spatial_resolution": 20,
       "proj:shape": [5490, 5490],
       "bands": [
@@ -208,8 +204,6 @@
       "proj:shape": [1830, 1830],
       "data_type": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r60m/b01'].data_type | tojson }},
       "nodata": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r60m/b01'].attributes.fill_value | tojson }},
-      "raster:scale": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r60m/b01'].attributes.scale_factor | tojson }},
-      "raster:offset": {{ zarr.consolidated_metadata.metadata['measurements/reflectance/r60m/b01'].attributes.add_offset | tojson }},
       "raster:spatial_resolution": 60,
       "bands": [
         {
@@ -243,8 +237,7 @@
     "product": {
       "href": {{ extra.zarr_store_href | tojson }},
       "type": "application/vnd.zarr; version=3",
-      "title": "EOPF Product",
-      
+      "title": "EOPF Product",      
       "roles": [
         "data",
         "metadata"
@@ -253,7 +246,7 @@
       "zarr:node_type": "group"
     },
     "zipped_product": {
-      "href": {{ extra.zarr_store_zipped_href | tojson}},
+      "href": {{ extra.zarr_store_zipped_href | tojson }},
       "type": "application/zip",
       "title": "Zipped EOPF Product",
       "roles": [
