@@ -24,6 +24,8 @@ def env():
 
 
 # BASE_URL = "https://objects.eodc.eu/e05ab01a9d56408d82ac32d69a5aae2a:notebook-data/test_cpm/cpm_v300rc4a"
+# https://objects.eodc.eu/e05ab01a9d56408d82ac32d69a5aae2a:sample-data/eopf-sample-output/geozarr/S2A_MSIL1C_20260721T102041_N0512_R065_T32UPU_20260721T153621.zarr
+# https://objects.eodc.eu/e05ab01a9d56408d82ac32d69a5aae2a:sample-data/eopf-sample-output/geozarr/S2C_MSIL2A_20260716T100601_N0512_R022_T32UQU_20260716T152417.zarr
 BASE_URL = "https://objects.eodc.eu/e05ab01a9d56408d82ac32d69a5aae2a:sample-data/eopf-sample-output/geozarr"
 STAC_API_URL = "https://stac.core.eopf.eodc.eu"
 
