@@ -114,10 +114,33 @@
       }
     },
     "product": {
-      "href": {{ extra.zarr_store_href | tojson }},
+      "href": {{ extra.burst_zarr_group_href | tojson }},
       "type": "application/vnd.zarr; version=3",
       "title": "EOPF Product",
-      "description": "The full EOPF Zarr store containing all bursts of the corresponding datatake",
+      "description": "The EOPF Zarr store of the burst data",
+      "roles": [
+        "data",
+        "metadata"
+      ],
+      "zarr:consolidated": false,
+      "zarr:node_type": "group"
+    },    
+    "zipped_product": {
+      "href": {{ extra.burst_zarr_group_zipped_href | tojson }},
+      "type": "application/zip",
+      "title": "Zipped EOPF Product",
+      "description": "The EOPF Zarr store of the burst data as zip archive",
+      "roles": [
+        "data",
+        "metadata",
+        "archive"
+      ]
+    },
+    "datatake": {
+      "href": {{ extra.zarr_store_href | tojson }},
+      "type": "application/vnd.zarr; version=3",
+      "title": "Datatake",
+      "description": "The EOPF Zarr store of the corresponding datatake containing all bursts",
       "roles": [
         "data",
         "metadata"
@@ -125,11 +148,11 @@
       "zarr:consolidated": true,
       "zarr:node_type": "group"
     },
-    "zipped_product": {
+    "zipped_datatake": {
       "href": {{ extra.zarr_store_zipped_href | tojson }},
       "type": "application/zip",
-      "title": "Zipped EOPF Product",
-      "description": "The full EOPF Zarr store as zip archive",
+      "title": "Zipped Datatake",
+      "description": "The EOPF Zarr store of the corresponding datatake containing all bursts as zip archive",
       "roles": [
         "data",
         "metadata",
