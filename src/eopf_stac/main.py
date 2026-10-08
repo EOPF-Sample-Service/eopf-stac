@@ -29,7 +29,7 @@ def configure_logging(level: int):
     )
 
 
-def validate_env(url: str, dry_run: bool, output_file: Optional[str], source_uri: str, env):
+def validate_env(url: str, dry_run: bool, output_file: str | None, source_uri: str, env):
     if url.startswith("s3://"):
         # if s3 url is provided, the credentials are required?
         missing_vars = []
@@ -45,9 +45,8 @@ def validate_env(url: str, dry_run: bool, output_file: Optional[str], source_uri
         if len(missing_vars) > 0:
             raise ValueError(f"The following enviroment variables are missing: {missing_vars}")
 
-    if not dry_run and not output_file:
-        if ENV_STAC_API_URL not in env:
-            raise ValueError(f"The enviroment variable {ENV_STAC_API_URL} is missing")
+    if not dry_run and not output_file and ENV_STAC_API_URL not in env:
+        raise ValueError(f"The enviroment variable {ENV_STAC_API_URL} is missing")
 
     if source_uri is None or len(source_uri) == 0:
         logger.warning("No value for --source-uri provided. Some STAC properties might not be available!")

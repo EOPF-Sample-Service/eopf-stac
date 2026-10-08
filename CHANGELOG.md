@@ -4,10 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.0.1] - 2026-09-09
+
+### Fixed
+
+- Drop `raster:scale` and `raster:offset` from STAC assets in Sentinel-2 collections [#82](https://github.com/EOPF-Sample-Service/eopf-stac/issues/82)
+
 ## [1.0.0] - 2026-08-14
 
 > [!IMPORTANT]  
-> This is a breaking relase!
+> This is a breaking release!
 > Only supports products converted with [eopf-cpm](https://gitlab.eopf.copernicus.eu/cpm/eopf-cpm) 3.0.0 and later (Zarr v3).
 > Currently STAC items can be created for **Sentinel-2 L1C and L2A products only**.
 
