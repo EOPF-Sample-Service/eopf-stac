@@ -314,10 +314,10 @@
       {%- endif %}
     },
     "atmosphere": {
-      "href": "{{ extra.zarr_store_href }}/quality/atmosphere",
-      "type": "application/vnd.zarr; version=3; profile=multiscales",
+      "href": "{{ extra.zarr_store_href }}/quality/atmosphere/r10m",
+      "type": "application/vnd.zarr; version=3",
       "title": "Atmosphere",
-      "description": "Aerosol Optical Thickness (AOT) and Water Vapour (WVP) maps",
+      "description": "Aerosol Optical Thickness (AOT) and Water Vapour (WVP) maps at 10m",
       "gsd": 10,
       "proj:shape": [10980, 10980],
       "data_type": "uint16",
@@ -340,7 +340,33 @@
         "atmosphere"
       ],
       "zarr:node_type": "group"
-    },    
+    },
+    "mask": {
+      "href": "{{ extra.zarr_store_href }}/quality/probability",
+      "type": "application/vnd.zarr; version=3; profile=multiscales",
+      "title": "Cloud / Snow masks",
+      "description": "Cloud and snow probability masks",
+      "gsd": 20,
+      "proj:shape": [5490, 5490],
+      "data_type": "float32",
+      "nodata": "nan",
+      "raster:spatial_resolution": 20,
+      "bands": [
+        {
+          "name": "cld",
+          "description": "Cloud probability mask"
+        },
+        {
+          "name": "snw",
+          "description": "Snow probability mask"
+        }        
+      ],      
+      "roles": [
+        "data",
+        "mask"
+      ],
+      "zarr:node_type": "group"      
+    },
     "scl": {
       "href": "{{ extra.zarr_store_href }}/conditions/mask/l2a_classification",
       "type": "application/vnd.zarr; version=3; profile=multiscales",

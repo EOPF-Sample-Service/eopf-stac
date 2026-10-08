@@ -23,13 +23,15 @@ def test_renders_valid_stac_item():
             test_spec = test_config.get("tests").get(test)
             zarr_base_url = test_config.get("zarr_base_url")
             stac_api_url = test_config.get("stac_api_url")
-            render_stac_item(test_spec, zarr_base_url, stac_api_url)
+            render_stac_item(test_spec, zarr_base_url, stac_api_url, test_config.get("debug", False))
+
+        pytest.fail(reason="Fail manually to see the logs")
 
     except Exception as e:
         pytest.fail(reason=(str(e)))
 
 
-def render_stac_item(test_spec, zarr_base_url, stac_api_url):
+def render_stac_item(test_spec, zarr_base_url, stac_api_url, debug: bool):
     zarr_store_name = test_spec.get("zarr_store_name")
     zarr_store_url = os.path.join(zarr_base_url, zarr_store_name)
 
@@ -51,12 +53,11 @@ def render_stac_item(test_spec, zarr_base_url, stac_api_url):
     # Create STAC item
     print(f"Creating STAC item for product_type {product_type} and url {zarr_store_url} ...")
     item = StacItemBuilderFactory().create(product_type).build(zarr_json, zarr_store_url, cdse_stac_item_url)
-    print(json.dumps(item.to_dict(), indent=2))
+    if debug:
+        print(json.dumps(item.to_dict(), indent=2))
 
     # Set collection
     item.collection_id = collection
 
     # Publish to STAC API
     register_item(item, stac_api_url)
-
-    pytest.fail(reason="Fail manually to see the logs")

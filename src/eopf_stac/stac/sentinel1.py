@@ -25,7 +25,7 @@ class StacItemBuilderS1:
         zipped_zarr_store_href = get_zipped_zarr_store_url(url, collection, get_identifier_from_href(url))
 
         bursts = {}
-        for key in metadata["consolidated_metadata"]["metadata"].keys():
+        for key in metadata["consolidated_metadata"]["metadata"]:
             k = key.split("/")[0]
             if k not in bursts:
                 # S01SIWSLC_20250819T045501_0030_A346_B9C4_0789BF_IW1_327474
