@@ -5,6 +5,7 @@ import re
 import pystac
 from jinja2 import Environment, FileSystemLoader, StrictUndefined
 from pystac.utils import datetime_to_str, now_in_utc
+from shapely.geometry import shape
 
 from eopf_stac.common.constants import (
     PRODUCT_TYPE_TO_COLLECTION,
@@ -14,7 +15,6 @@ from eopf_stac.common.stac import (
     fix_geometry,
     get_identifier_from_href,
     get_zipped_zarr_store_url,
-    rearrange_bbox,
 )
 
 logger = logging.getLogger(__name__)
@@ -32,7 +32,7 @@ class StacItemBuilderS2:
         except PackageNotFoundError:
             __version__ = "unknown"
 
-        return __version__        
+        return __version__
 
     def build(self, metadata: dict, url: str, cdse_stac_item_url: str | None) -> pystac.Item:
         # Derive extra information
@@ -50,7 +50,9 @@ class StacItemBuilderS2:
         cube_x_extent = None
         cube_y_extent = None
         try:
-            spatial_bbox = metadata["consolidated_metadata"]["metadata"]["measurements/reflectance"]["attributes"]["spatial:bbox"]
+            spatial_bbox = metadata["consolidated_metadata"]["metadata"]["measurements/reflectance"]["attributes"][
+                "spatial:bbox"
+            ]
             # spatial_bbox: 2D bounding box [xmin, ymin, xmax, ymax]
             cube_x_extent = [spatial_bbox[0], spatial_bbox[2]]
             cube_y_extent = [spatial_bbox[1], spatial_bbox[3]]
@@ -71,7 +73,7 @@ class StacItemBuilderS2:
             "zarr_store_zipped_href": zipped_zarr_store_href,
             "cdse_item_uri": cdse_stac_item_url,
             "cube_x_extent": cube_x_extent,
-            "cube_y_extent": cube_y_extent
+            "cube_y_extent": cube_y_extent,
         }
 
         # Render STAC item JSON from template
@@ -95,7 +97,8 @@ class StacItemBuilderS2:
 
         # Apply some geometry corrections
         fix_geometry(item)
-        item.bbox = rearrange_bbox(item.bbox)
+        geom = shape(item.geometry)
+        item.bbox = geom.bounds
 
         # Validate item
         logger.debug(json.dumps(item.to_dict(), indent=2))
