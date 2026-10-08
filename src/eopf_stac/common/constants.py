@@ -64,7 +64,7 @@ PRODUCT_TYPE_TO_COLLECTION: Final[dict] = {
     # "S01SEWGRD": "sentinel-1-l1-grd",
     # "S01SIWGRD": "sentinel-1-l1-grd",
     # "S01SSMGRD": "sentinel-1-l1-grd",
-    # "S01SIWSLC": "sentinel-1-l1-slc",
+    "S01SIWSLC": "sentinel-1-l1-slc-zarr3",
     # "S01SIVSLC": "sentinel-1-l1-slc",  # CPM workaround
     # "S01SWVSLC": "sentinel-1-l1-slc",
     # "S01SSMSLC": "sentinel-1-l1-slc",

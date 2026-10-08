@@ -1,0 +1,174 @@
+{#- jinja template to generate STAC item from zarr.json and extra extra information #}
+{
+  "id": {{ extra.id | tojson }},
+  "bbox": {{ zarr.attributes.stac_discovery.bbox | tojson }},
+  "type": "Feature",
+  "links": [
+    {
+      "rel": "license",
+      "href": "https://sentinel.esa.int/documents/247904/690755/Sentinel_Data_Legal_Notice",
+      "type": "application/pdf",
+      "title": "Legal notice on the use of Copernicus Sentinel Data and Service Information"
+    }
+    {%- if extra.cdse_item_uri %}
+    ,{
+      "rel": "alternate",
+      "title": "Corresponding STAC item in CDSE",
+      "href": {{ extra.cdse_item_uri | tojson }},
+      "type": "application/geo+json"
+    }
+    {%- endif %}    
+  ],
+  "geometry": {{ zarr.attributes.stac_discovery.geometry | tojson }},
+  "properties": {
+    "created": {{ extra.created | tojson }},    
+    "updated": {{ extra.created | tojson }},
+    "datetime": {{ zarr.attributes.stac_discovery.properties.datetime | tojson  }},
+    "start_datetime": {{ zarr.attributes.stac_discovery.properties.start_datetime | tojson }},
+    "end_datetime": {{ zarr.attributes.stac_discovery.properties.end_datetime | tojson }},
+    "constellation": "sentinel-1",
+    "deprecated": false,
+    "eopf:datatake_id": {{ zarr.attributes.stac_discovery.properties['eopf:datatake_id'] | tojson }},
+    "eopf:instrument_mode": {{ zarr.attributes.stac_discovery.properties['eopf:instrument_mode'] | tojson }},
+    "instruments": [
+      "sar"
+    ],
+    "mission": "Sentinel-1",
+    "platform": {{ zarr.attributes.stac_discovery.properties.platform | tojson }},
+    "processing:lineage": {{ zarr.attributes.stac_discovery.properties['processing:lineage'] | tojson }},
+    "processing:version": {{ extra['processing:version'] | tojson }},
+    "processing:software": {{ extra.processing_software | tojson }},
+    "processing:datetime": {{ zarr.attributes.stac_discovery.properties['processing:datetime'] | tojson }},
+    "processing:facility": {{ zarr.attributes.stac_discovery.properties['processing:facility'] | tojson }},
+    "product:type": "S01SIWSLC",
+    "product:timeliness": {{ zarr.attributes.stac_discovery.properties['product:timeliness'] | tojson }},
+    "product:timeliness_category": {{ zarr.attributes.stac_discovery.properties['product:timeliness_category'] | tojson }},
+    "providers": [
+      {
+        "url": "https://commission.europa.eu/",
+        "name": "European Commission",
+        "roles": [
+          "licensor"
+        ]
+      },
+      {
+        "url": "https://sentinel.esa.int/web/sentinel/missions/sentinel-1",
+        "name": "ESA",
+        "roles": [
+          "producer",
+          "processor"
+        ]
+      },
+      {
+        "url": "https://zarr.eopf.copernicus.eu/",
+        "name": "EOPF Sentinel Zarr Samples Service",
+        "roles": [
+          "host",
+          "processor"
+        ]
+      }
+    ],
+    "sat:absolute_orbit": {{ zarr.attributes.stac_discovery.properties['sat:absolute_orbit'] | tojson }},
+    "sat:relative_orbit": {{ zarr.attributes.stac_discovery.properties['sat:relative_orbit'] | tojson }},
+    "sat:orbit_state": {{ zarr.attributes.stac_discovery.properties['sat:orbit_state'] | tojson }},
+    "sat:anx_datetime": {{ zarr.attributes.stac_discovery.properties['sat:anx_datetime'] | tojson }},
+    "sat:platform_international_designator": {{ zarr.attributes.stac_discovery.properties['sat:platform_international_designator'] | tojson }},
+    "sar:instrument_mode": {{ zarr.attributes.stac_discovery.properties['sar:instrument_mode'] | tojson }},
+    "sar:frequency_band": {{ zarr.attributes.stac_discovery.properties['sar:frequency_band'] | tojson }},
+    "sar:polarizations": {{ zarr.attributes.stac_discovery.properties['sar:polarizations'] | tojson }},
+    "sar:beam_ids": {{ extra.swath | tojson }},
+    "sar:center_frequency": {{ zarr.attributes.stac_discovery.properties['sar:center_frequency'] | tojson }},
+    "sar:relative_burst": {{ zarr.attributes.stac_discovery.properties['sar:relative_burst'] | tojson }},
+    "sar:pixel_spacing_range": {{ zarr.attributes.stac_discovery.properties['sar:pixel_spacing_range'] | tojson }},
+    "sar:pixel_spacing_azimuth": {{ zarr.attributes.stac_discovery.properties['sar:pixel_spacing_azimuth'] | tojson }},
+    "view:incidence_angle": {{ zarr.attributes.stac_discovery.properties['view:incidence_angle'] | tojson }}
+  },
+  "assets": {
+    "SLC": {
+      "href": "{{ extra.burst_zarr_group_href }}/measurements",
+      "type": "application/vnd.zarr; version=3",
+      "title": "SLC image (burst)",
+      "description": "Mulit-dimensional complex (real and imaginary) burst data for sub-swath with dimensions polarization, azimuth time and slant-range",
+      "roles": [
+        "data"
+      ],
+      "zarr:node_type": "group",
+      "cube:dimensions": {
+        "polarization" : {
+          "type" : "other",
+          "values": {{ zarr.attributes.stac_discovery.properties['sar:polarizations'] | tojson }}
+        },
+        "azimuth_time" : {
+          "type" : "temporal"
+        },
+        "slant_range_time" : {
+          "type" : "temporal"
+        }
+      },
+      "cube:variables" : {
+        "slc": {
+          "dimensions": ["polarization","azimuth_time","slant_range_time"],
+          "type" : "data",
+          "data_type": "complex64"
+        }
+      }
+    },
+    "product": {
+      "href": {{ extra.burst_zarr_group_href | tojson }},
+      "type": "application/vnd.zarr; version=3",
+      "title": "EOPF Product",
+      "description": "The EOPF Zarr store of the burst data",
+      "roles": [
+        "data",
+        "metadata"
+      ],
+      "zarr:consolidated": false,
+      "zarr:node_type": "group"
+    },    
+    "zipped_product": {
+      "href": {{ extra.burst_zarr_group_zipped_href | tojson }},
+      "type": "application/zip",
+      "title": "Zipped EOPF Product",
+      "description": "The EOPF Zarr store of the burst data as zip archive",
+      "roles": [
+        "data",
+        "metadata",
+        "archive"
+      ]
+    },
+    "datatake": {
+      "href": {{ extra.zarr_store_href | tojson }},
+      "type": "application/vnd.zarr; version=3",
+      "title": "Datatake",
+      "description": "The EOPF Zarr store of the corresponding datatake containing all bursts",
+      "roles": [
+        "data",
+        "metadata"
+      ],
+      "zarr:consolidated": true,
+      "zarr:node_type": "group"
+    },
+    "zipped_datatake": {
+      "href": {{ extra.zarr_store_zipped_href | tojson }},
+      "type": "application/zip",
+      "title": "Zipped Datatake",
+      "description": "The EOPF Zarr store of the corresponding datatake containing all bursts as zip archive",
+      "roles": [
+        "data",
+        "metadata",
+        "archive"
+      ]
+    }
+  },  
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/timestamps/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/sat/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/processing/v1.2.0/schema.json",
+    "https://stac-extensions.github.io/product/v0.1.0/schema.json",
+    "https://stac-extensions.github.io/sar/v1.3.2/schema.json",
+    "https://cs-si.github.io/eopf-stac-extension/v1.2.0/schema.json",
+    "https://stac-extensions.github.io/version/v1.2.0/schema.json",
+    "https://stac-extensions.github.io/view/v1.0.0/schema.json"
+  ]
+}
