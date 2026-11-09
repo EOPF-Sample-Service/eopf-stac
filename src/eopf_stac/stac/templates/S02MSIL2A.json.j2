@@ -350,10 +350,10 @@
       {%- endif %}
     },
     "atmosphere": {
-      "href": "{{ extra.zarr_store_href }}/quality/atmosphere/r10m",
-      "type": "application/vnd.zarr; version=3",
+      "href": "{{ extra.zarr_store_href }}/quality/atmosphere",
+      "type": "application/vnd.zarr; version=3; profile=multiscales",
       "title": "Atmosphere",
-      "description": "Aerosol Optical Thickness (AOT) and Water Vapour (WVP) maps at 10m",
+      "description": "Aerosol Optical Thickness (AOT) and Water Vapour (WVP) maps",
       "gsd": 10,
       "proj:shape": [10980, 10980],
       "data_type": "uint16",
