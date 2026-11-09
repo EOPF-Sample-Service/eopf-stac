@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.1.0] - 2026-11-09
+
+> [!IMPORTANT]  
+> Release for **EOPF Zarr3 Sentinel-2 L1C and L2A products only**
+
+### Added
+
+- Add multiscale reflectance asset for Sentinel-2 items (S2 L1C and L2A) [#83](https://github.com/EOPF-Sample-Service/eopf-stac/issues/83)
+- Add eopf-geozarr version via processing extension (S2 L2A) [#84](https://github.com/EOPF-Sample-Service/eopf-stac/issues/84)
+- Add atmosphere multiscale asset containing AOT and WVP maps (S2 L2A) [#88](https://github.com/EOPF-Sample-Service/eopf-stac/issues/88)
+- Add scene classification (SCL) map as multiscale asset (S2 L2A) [#89](https://github.com/EOPF-Sample-Service/eopf-stac/issues/89)
+- Add multiscale asset containing cloud and snow probability masks (S2 L2A) [#90](https://github.com/EOPF-Sample-Service/eopf-stac/issues/90)
+- Re-added `raster:scale` and `raster:offset` to STAC assets (S2 L1C and L2A) [#82](https://github.com/EOPF-Sample-Service/eopf-stac/issues/82)
+
+### Fixed
+
+- sun_elevation is filled with the sun zenith angle (S2 L1C and L2A) [#86](https://github.com/EOPF-Sample-Service/eopf-stac/issues/86)
+
 ## [1.0.1] - 2026-09-09
 
 ### Fixed
