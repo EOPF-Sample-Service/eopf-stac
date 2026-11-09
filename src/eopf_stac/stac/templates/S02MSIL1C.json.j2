@@ -89,7 +89,7 @@
     "sat:relative_orbit": {{ zarr.attributes.stac_discovery.properties['sat:relative_orbit'] | tojson }},
     "sci:doi": {{ zarr.attributes.stac_discovery.properties['sci:doi'] | tojson }},
     "view:sun_azimuth": {{ zarr.attributes.other_metadata.mean_sun_azimuth_angle_in_deg_for_all_bands_all_detectors | tojson }},
-    "view:sun_elevation": {{ zarr.attributes.other_metadata.mean_sun_zenith_angle_in_deg_for_all_bands_all_detectors | tojson }}
+    "view:sun_elevation": {{ (90 - zarr.attributes.other_metadata.mean_sun_zenith_angle_in_deg_for_all_bands_all_detectors) | tojson }}
   },
   "assets": {
     "reflectance": {
