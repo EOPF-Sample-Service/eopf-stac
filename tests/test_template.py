@@ -2,6 +2,7 @@ import json
 import os
 from pathlib import Path
 
+import pystac
 import pytest
 import yaml
 
@@ -23,7 +24,11 @@ def test_renders_valid_stac_item():
             test_spec = test_config.get("tests").get(test)
             zarr_base_url = test_config.get("zarr_base_url")
             stac_api_url = test_config.get("stac_api_url")
-            render_stac_item(test_spec, zarr_base_url, stac_api_url, test_config.get("debug", False))
+            item = render_stac_item(test_spec, zarr_base_url, stac_api_url, test_config.get("debug", False))
+
+            # Publish to STAC API
+            if test_config.get("register", False):
+                register_item(item, stac_api_url)
 
         pytest.fail(reason="Fail manually to see the logs")
 
@@ -31,7 +36,7 @@ def test_renders_valid_stac_item():
         pytest.fail(reason=(str(e)))
 
 
-def render_stac_item(test_spec, zarr_base_url, stac_api_url, debug: bool):
+def render_stac_item(test_spec, zarr_base_url, stac_api_url, debug: bool) -> pystac.Item:
     zarr_store_name = test_spec.get("zarr_store_name")
     zarr_store_url = os.path.join(zarr_base_url, zarr_store_name)
 
@@ -59,5 +64,4 @@ def render_stac_item(test_spec, zarr_base_url, stac_api_url, debug: bool):
     # Set collection
     item.collection_id = collection
 
-    # Publish to STAC API
-    register_item(item, stac_api_url)
+    return item

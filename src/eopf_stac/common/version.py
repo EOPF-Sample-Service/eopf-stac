@@ -1,4 +1,4 @@
-def get_eopf_stac_version(self) -> str:
+def get_eopf_stac_version() -> str:
     from importlib.metadata import PackageNotFoundError, version
 
     try:

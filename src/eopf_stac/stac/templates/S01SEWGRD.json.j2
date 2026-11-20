@@ -1,0 +1,161 @@
+{
+  "id": {{ extra.id | tojson }},
+  "type": "Feature",
+  "bbox": {{ zarr.attributes.stac_discovery.bbox | tojson }},
+  "geometry": {{ zarr.attributes.stac_discovery.geometry | tojson }},  
+  "links": [
+    {
+      "rel": "license",
+      "href": "https://sentinel.esa.int/documents/247904/690755/Sentinel_Data_Legal_Notice",
+      "type": "application/pdf",
+      "title": "Legal notice on the use of Copernicus Sentinel Data and Service Information"
+    }
+    {%- if extra.cdse_item_uri is defined %}
+    ,{
+      "rel": "alternate",
+      "title": "Corresponding STAC item in CDSE",
+      "href": {{ extra.cdse_item_uri | tojson }},
+      "type": "application/geo+json"
+    }
+    {%- endif %}    
+  ],
+  "properties": {
+    "created": {{ extra.created | tojson }},
+    "updated": {{ extra.created | tojson }},
+    "datetime": {{ zarr.attributes.stac_discovery.properties.datetime | tojson  }},
+    "start_datetime": {{ zarr.attributes.stac_discovery.properties.start_datetime | tojson }},
+    "end_datetime": {{ zarr.attributes.stac_discovery.properties.end_datetime | tojson }},
+    "constellation": "sentinel-1",
+    "deprecated": false,
+    "eopf:datatake_id": {{ zarr.attributes.stac_discovery.properties['eopf:datatake_id'] | tojson }},
+    "eopf:instrument_mode": {{ extra['eopf:instrument_mode'] | tojson }},
+    "instruments": [
+      "sar"
+    ],
+    "mission": "Sentinel-1",
+    "platform": {{ zarr.attributes.stac_discovery.properties.platform | tojson }},
+    "processing:lineage":  {{ zarr.attributes.stac_discovery.properties['processing:lineage'] | tojson }},
+    "processing:software": {{ extra['processing:software'] | tojson }},
+    "processing:version": {{ extra['processing:version'] | tojson }},    
+    "product:type": "S01SEWGRD",
+    "product:timeliness": {{ zarr.attributes.stac_discovery.properties['product:timeliness'] | tojson }},
+    "product:timeliness_category": {{ zarr.attributes.stac_discovery.properties['product:timeliness_category'] | tojson }},
+    "providers": [
+      {
+        "url": "https://commission.europa.eu/",
+        "name": "European Commission",
+        "roles": [
+          "licensor"
+        ]
+      },
+      {
+        "url": "https://sentinel.esa.int/web/sentinel/missions/sentinel-1",
+        "name": "ESA",
+        "roles": [
+          "producer",
+          "processor"
+        ]
+      },
+      {
+        "url": "https://zarr.eopf.copernicus.eu/",
+        "name": "EOPF Sentinel Zarr Samples Service",
+        "roles": [
+          "host",
+          "processor"
+        ]
+      }
+    ],       
+    "sat:absolute_orbit": {{ zarr.attributes.stac_discovery.properties['sat:absolute_orbit'] | tojson }},
+    "sat:anx_datetime": {{ zarr.attributes.stac_discovery.properties['sat:anx_datetime'] | tojson }},
+    "sat:orbit_state": {{ zarr.attributes.stac_discovery.properties['sat:orbit_state'] | tojson }},
+    "sat:relative_orbit": {{ zarr.attributes.stac_discovery.properties['sat:relative_orbit'] | tojson }},
+    "sat:platform_international_designator": {{ zarr.attributes.stac_discovery.properties['sat:platform_international_designator'] | tojson }},
+    "sar:polarizations": {{ zarr.attributes.stac_discovery.properties['sar:polarizations'] | tojson }}, 
+    "sar:frequency_band": {{ zarr.attributes.stac_discovery.properties['sar:frequency_band'] | tojson }},
+    "sar:instrument_mode": {{ zarr.attributes.stac_discovery.properties['sar:instrument_mode'] | tojson }},
+    "sar:beam_ids": {{ extra['sar:beam_ids'] | tojson }},
+    "sar:center_frequency": {{ extra['sar:center_frequency'] | tojson }},
+    "sar:pixel_spacing_range": {{ extra['sar:pixel_spacing_range'] | tojson }},
+    "sar:pixel_spacing_azimuth": {{ extra['sar:pixel_spacing_azimuth'] | tojson }},
+    "view:incidence_angle": {{ extra['view:incidence_angle'] | tojson }}
+  },
+  "assets": {
+    "grd": {
+      "href": "{{ extra.scene_zarr_store_href }}/measurements",
+      "type": "application/vnd.zarr; version=3",
+      "title": "GRD image",
+      "bands": [
+        {
+          "name": "grd",
+          "description": "Measurement data for GRD",
+          "data_type": "uint16",
+          "nodata": 0
+          {%- if zarr.attributes.stac_discovery.assets.grd.statistics is defined -%}
+          ,"statistics": {{ zarr.attributes.stac_discovery.assets.grd.statistics | tojson }}
+          {%- endif -%}
+        },
+        {
+          "name": "polarization",
+          "data_type": "other"
+        },
+        {
+          "name": "azimuth_time",
+          "data_type": "int64",
+          "nodata": 0
+        },
+        {
+          "name": "ground_range",
+          "data_type": "float64",
+          "fill_value": "nan"
+        }
+      ],
+      "roles": [
+        "data"
+      ],      
+      "zarr:node_type": "group"
+    },
+    "scene": {
+      "href": {{ extra.scene_zarr_store_href | tojson }},
+      "type": "application/vnd.zarr; version=3",
+      "roles": [
+        "data",
+        "metadata"
+      ],
+      "title": "GRD scene",
+      "zarr:node_type": "group",
+      "zarr:consolidated": true
+    },
+    "product": {
+      "href": {{ extra.zarr_store_href | tojson }},
+      "type": "application/vnd.zarr; version=3",
+      "roles": [
+        "data",
+        "metadata"
+      ],
+      "title": "EOPF Product",
+      "description": "The full EOPF Zarr store",
+      "zarr:node_type": "group"
+    },
+    "zipped_product": {
+      "href": {{ extra.zarr_store_zipped_href | tojson}},
+      "type": "application/zip",
+      "roles": [
+        "data",
+        "metadata",
+        "archive"
+      ],
+      "title": "Zipped EOPF Product",
+      "description": "The full EOPF Zarr store as zip archive"
+    }    
+  },  
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/timestamps/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/sat/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/processing/v1.2.0/schema.json",
+    "https://stac-extensions.github.io/product/v0.1.0/schema.json",
+    "https://stac-extensions.github.io/sar/v1.3.0/schema.json",
+    "https://cs-si.github.io/eopf-stac-extension/v1.2.0/schema.json",
+    "https://stac-extensions.github.io/version/v1.2.0/schema.json"
+  ]
+}
