@@ -135,7 +135,7 @@
   },
   "item_assets": {
     "grd": {
-      "type": "application/vnd.zarr; version=3;",
+      "type": "application/vnd.zarr; version=3",
       "roles": [
         "data"
       ],

@@ -84,10 +84,10 @@
     "view:incidence_angle": {{ zarr.attributes.stac_discovery.properties['view:incidence_angle'] | tojson }}
   },
   "assets": {
-    "SLC": {
+    "slc": {
       "href": "{{ extra.burst_zarr_group_href }}/measurements",
       "type": "application/vnd.zarr; version=3",
-      "title": "SLC image (burst)",
+      "title": "SLC image",
       "description": "Mulit-dimensional complex (real and imaginary) burst data for sub-swath with dimensions polarization, azimuth time and slant-range",
       "roles": [
         "data"
@@ -113,8 +113,19 @@
         }
       }
     },
-    "product": {
+    "burst": {
       "href": {{ extra.burst_zarr_group_href | tojson }},
+      "type": "application/vnd.zarr; version=3",
+      "roles": [
+        "data",
+        "metadata"
+      ],
+      "title": "SLC burst",
+      "zarr:node_type": "group",
+      "zarr:consolidated": true
+    },    
+    "product": {
+      "href": {{ extra.zarr_store_href | tojson }},
       "type": "application/vnd.zarr; version=3",
       "title": "EOPF Product",
       "description": "The EOPF Zarr store of the burst data",
@@ -122,42 +133,18 @@
         "data",
         "metadata"
       ],
-      "zarr:consolidated": false,
       "zarr:node_type": "group"
-    },    
+    },
     "zipped_product": {
-      "href": {{ extra.burst_zarr_group_zipped_href | tojson }},
-      "type": "application/zip",
-      "title": "Zipped EOPF Product",
-      "description": "The EOPF Zarr store of the burst data as zip archive",
-      "roles": [
-        "data",
-        "metadata",
-        "archive"
-      ]
-    },
-    "datatake": {
-      "href": {{ extra.zarr_store_href | tojson }},
-      "type": "application/vnd.zarr; version=3",
-      "title": "Datatake",
-      "description": "The EOPF Zarr store of the corresponding datatake containing all bursts",
-      "roles": [
-        "data",
-        "metadata"
-      ],
-      "zarr:consolidated": true,
-      "zarr:node_type": "group"
-    },
-    "zipped_datatake": {
       "href": {{ extra.zarr_store_zipped_href | tojson }},
       "type": "application/zip",
-      "title": "Zipped Datatake",
-      "description": "The EOPF Zarr store of the corresponding datatake containing all bursts as zip archive",
       "roles": [
         "data",
         "metadata",
         "archive"
-      ]
+      ],
+      "title": "Zipped EOPF Product",
+      "description": "The full EOPF Zarr store as zip archive"
     }
   },  
   "stac_version": "1.1.0",
